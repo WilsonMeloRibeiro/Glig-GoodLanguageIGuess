@@ -2,6 +2,10 @@
 #define clox_scanner_h
 
 void InitScanner(const char *source);
+static char Advance();
+static char Peek();
+static void SkipWhiteSpace();
+static bool Match(const char expected);
 
 typedef enum
 {
@@ -59,6 +63,7 @@ typedef struct
     int length;
     int line;
 } Token;
+
 
 Token ScanToken();
 #endif
