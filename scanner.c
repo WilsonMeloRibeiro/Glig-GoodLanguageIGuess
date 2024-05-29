@@ -16,6 +16,10 @@ Scanner scanner;
 static char Peek(){
     return *scanner.current;
 }
+static char PeekNext(){
+    if(IsAtEnd()) return '\n';
+    return scanner.current[1];
+}
 
 static void SkipWhiteSpace(){
     for(;;){
@@ -30,7 +34,14 @@ static void SkipWhiteSpace(){
         case'\n':
             scanner.line++;
             Advance();
-            break;;
+            break;
+        case'/':
+            if (PeekNext()=='/'){
+                while(Peek()!='\n' && !IsAtEnd()) Advance();
+            }else{
+                return;
+            }
+            break;
         default:
             return;
         }
@@ -42,6 +53,22 @@ void InitScanner(const char *source)
     scanner.current = source;
     scanner.start = source;
     scanner.line = 1;
+}
+
+static Token MakeString(){
+    for (;;)
+    {
+        char c = Peek();
+        while(c != '"' && !IsAtEnd()){
+            if(c=='\n') scanner.line++;
+            Advance();
+        }
+        if(IsAtEnd()) return ErrorToken("Unterminated String.");
+
+        Advance();
+        return MakeToken(TOKEN_STRING);
+    }
+    
 }
 
 static bool IsAtEnd(){
@@ -102,6 +129,7 @@ Token ScanToken(){
     case '=': return MakeToken(Match('=')? TOKEN_EQUAL_EQUAL: TOKEN_EQUAL);
     case '>': return MakeToken(Match('=')? TOKEN_GREATER_EQUAL: TOKEN_GREATER);
     case '<': return MakeToken(Match('=')? TOKEN_LESS_EQUAL: TOKEN_LESS);
+    case '"': return MakeString();
     default:
         break;
     }

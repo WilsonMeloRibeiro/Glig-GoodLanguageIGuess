@@ -5,6 +5,7 @@ void InitScanner(const char *source);
 static char Advance();
 static char Peek();
 static void SkipWhiteSpace();
+static Token MakeString();
 static bool Match(const char expected);
 
 typedef enum
