@@ -6,6 +6,8 @@ static char Advance();
 static char Peek();
 static void SkipWhiteSpace();
 static Token MakeString();
+static bool IsDigit(char c);
+static Token MakeNumber();
 static bool Match(const char expected);
 
 typedef enum

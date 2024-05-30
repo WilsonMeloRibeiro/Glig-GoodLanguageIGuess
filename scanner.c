@@ -71,8 +71,23 @@ static Token MakeString(){
     
 }
 
+static bool IsDigit(char c){
+    return c>= '0' && c<='9';
+}
+
 static bool IsAtEnd(){
     return *scanner.current == '\0';
+}
+
+static Token MakeNumber(){
+    while(IsDigit(Peek())) Advance();
+
+    if(Peek()=='.' && IsDigit(PeekNext())) {
+        Advance();
+        while (IsDigit(Peek())) Advance();
+    }
+
+    return MakeToken(TOKEN_NUMBER);
 }
 
 static Token MakeToken(TokenType type){
@@ -111,6 +126,7 @@ Token ScanToken(){
     if(IsAtEnd()) return MakeToken(TOKEN_EOF);
 
     char c = Advance();
+    if(IsDigit(c)) return MakeNumber();
 
     switch (c)
     {
